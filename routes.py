@@ -10,15 +10,14 @@ logger = logging.getLogger(__name__)
 @app.route("/health")
 def health():
     """Health check endpoint for Docker/Kubernetes"""
+    latest_result = CheckResult.query.order_by(CheckResult.id.desc()).first()
     return (
         jsonify(
             {
                 "status": "healthy",
                 "timestamp": (
-                    CheckResult.query.order_by(CheckResult.id.desc())
-                    .first()
-                    .timestamp.isoformat()
-                    if CheckResult.query.first()
+                    latest_result.checked_at.isoformat()
+                    if latest_result
                     else None
                 ),
             }
