@@ -1,5 +1,7 @@
-import requests
 import logging
+
+import requests
+
 from .base import BaseAlertPlugin
 
 logger = logging.getLogger(__name__)

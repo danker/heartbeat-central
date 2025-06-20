@@ -1,8 +1,10 @@
-from flask import request, jsonify, render_template, redirect, url_for, flash
-from app import app, db
-from models import Healthcheck, CheckResult, AlertConfig, HealthcheckStatus
-from healthcheck_engine import HealthcheckEngine
 import logging
+
+from flask import flash, jsonify, redirect, render_template, request, url_for
+
+from app import app, db
+from healthcheck_engine import HealthcheckEngine
+from models import AlertConfig, CheckResult, Healthcheck, HealthcheckStatus
 
 logger = logging.getLogger(__name__)
 

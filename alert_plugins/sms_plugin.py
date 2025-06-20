@@ -1,6 +1,8 @@
-import os
 import logging
+import os
+
 from twilio.rest import Client
+
 from .base import BaseAlertPlugin
 
 logger = logging.getLogger(__name__)

@@ -1,6 +1,7 @@
 """Basic tests for the healthcheck monitor application."""
 
 import pytest
+
 from app import app, db
 from models import Healthcheck, HealthcheckStatus
 

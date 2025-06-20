@@ -1,10 +1,12 @@
-import requests
-import time
 import logging
+import time
 from datetime import datetime
-from models import Healthcheck, CheckResult, HealthcheckStatus
-from app import db
+
+import requests
+
 from alert_manager import AlertManager
+from app import db
+from models import CheckResult, Healthcheck, HealthcheckStatus
 
 logger = logging.getLogger(__name__)
 

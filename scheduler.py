@@ -1,9 +1,11 @@
+import logging
+
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
-import logging
+
+from app import app
 from healthcheck_engine import HealthcheckEngine
 from models import Healthcheck
-from app import app
 
 logger = logging.getLogger(__name__)
 

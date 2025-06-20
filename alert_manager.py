@@ -1,9 +1,10 @@
 import logging
-from models import AlertConfig
+
+from alert_plugins.discord_plugin import DiscordAlertPlugin
 from alert_plugins.email_plugin import EmailAlertPlugin
 from alert_plugins.slack_plugin import SlackAlertPlugin
-from alert_plugins.discord_plugin import DiscordAlertPlugin
 from alert_plugins.sms_plugin import SMSAlertPlugin
+from models import AlertConfig
 
 logger = logging.getLogger(__name__)
 
