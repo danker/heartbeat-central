@@ -1,0 +1,63 @@
+version: 2
+updates:
+  # Enable version updates for Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "danker"
+    assignees:
+      - "danker"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    groups:
+      flask-deps:
+        patterns:
+          - "flask*"
+          - "werkzeug"
+          - "jinja2"
+      testing-deps:
+        patterns:
+          - "pytest*"
+          - "coverage"
+      dev-deps:
+        patterns:
+          - "black"
+          - "flake8*"
+          - "mypy"
+          - "isort"
+          - "bandit"
+          - "safety"
+
+  # Enable version updates for Docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    reviewers:
+      - "danker"
+    assignees:
+      - "danker"
+    commit-message:
+      prefix: "docker"
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly" 
+      day: "wednesday"
+      time: "09:00"
+    reviewers:
+      - "danker"
+    assignees:
+      - "danker"
+    commit-message:
+      prefix: "ci"

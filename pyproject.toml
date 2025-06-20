@@ -1,0 +1,148 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "healthcheck-monitor"
+version = "1.0.0"
+description = "A Flask-based application for monitoring website health with configurable alerts"
+authors = [{name = "Dan Ker", email = "dan@example.com"}]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Framework :: Flask",
+]
+dependencies = [
+    "Flask==2.3.3",
+    "Flask-SQLAlchemy==3.0.5",
+    "APScheduler==3.10.4",
+    "requests==2.31.0",
+    "python-dotenv==1.0.0",
+    "twilio==8.8.0",
+    "Werkzeug==2.3.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==7.4.2",
+    "pytest-flask==1.3.0",
+    "pytest-cov==4.1.0",
+    "flake8==6.1.0",
+    "black==23.9.1",
+    "isort==5.12.0",
+    "mypy==1.5.1",
+    "bandit[toml]==1.7.5",
+    "safety==2.3.5",
+    "pre-commit==3.4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/danker/healthcheck-monitor"
+Repository = "https://github.com/danker/healthcheck-monitor"
+Issues = "https://github.com/danker/healthcheck-monitor/issues"
+
+[tool.black]
+line-length = 88
+target-version = ['py311', 'py312', 'py313']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["healthcheck_monitor"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503", "E501"]
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv/*",
+    ".eggs",
+    "*.egg",
+    "build",
+    "dist",
+]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    ".venv/*",
+    "setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]
+skips = ["B104", "B324"]
+
+[tool.bandit.assert_used]
+skips = ["*_test.py", "*/test_*.py"]
