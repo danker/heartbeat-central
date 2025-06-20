@@ -82,7 +82,7 @@ def test_healthcheck_model():
 
     assert hc.name == "Test"
     assert hc.url == "https://example.com"
-    assert hc.is_active is True  # Default value
+    assert hc.is_active is None  # Default is only applied when saved to DB
 
     # Test to_dict method
     data = hc.to_dict()
