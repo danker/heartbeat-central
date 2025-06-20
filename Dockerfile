@@ -1,14 +1,16 @@
 # Build stage
-FROM python:3.13-slim as builder
+FROM python:3.13-alpine as builder
 
 WORKDIR /app
 
 # Install system dependencies for building
-RUN apt-get update && apt-get install -y \
+RUN apk add --no-cache \
     gcc \
-    g++ \
+    musl-dev \
     python3-dev \
-    && rm -rf /var/lib/apt/lists/*
+    g++ \
+    libffi-dev \
+    openssl-dev
 
 # Install uv for faster dependency management
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
@@ -18,22 +20,21 @@ COPY requirements.txt .
 RUN uv pip install --system --no-cache-dir -r requirements.txt
 
 # Production stage
-FROM python:3.13-slim
+FROM python:3.13-alpine
 
 WORKDIR /app
 
 # Install only runtime system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apk add --no-cache \
     curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+    tzdata
 
 # Copy Python packages from builder stage
 COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
-# Create non-root user
-RUN groupadd -r appuser && useradd -r -g appuser appuser
+# Create non-root user (Alpine syntax)
+RUN addgroup -g 1000 appuser && adduser -D -u 1000 -G appuser appuser
 
 # Copy application code
 COPY --chown=appuser:appuser . .
