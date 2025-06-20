@@ -47,8 +47,11 @@ class BaseAlertPlugin(ABC):
         """
         Format a failure alert message
         """
-        response_time = (f"{check_result.response_time:.2f}s" 
-                         if check_result.response_time else 'N/A')
+        response_time = (
+            f"{check_result.response_time:.2f}s"
+            if check_result.response_time
+            else "N/A"
+        )
         return f"""
 🚨 HEALTHCHECK FAILURE
 
@@ -65,8 +68,11 @@ Time: {check_result.checked_at.strftime('%Y-%m-%d %H:%M:%S UTC')}
         """
         Format a recovery alert message
         """
-        response_time = (f"{check_result.response_time:.2f}s" 
-                         if check_result.response_time else 'N/A')
+        response_time = (
+            f"{check_result.response_time:.2f}s"
+            if check_result.response_time
+            else "N/A"
+        )
         return f"""
 ✅ HEALTHCHECK RECOVERED
 
