@@ -47,6 +47,8 @@ class BaseAlertPlugin(ABC):
         """
         Format a failure alert message
         """
+        response_time = (f"{check_result.response_time:.2f}s" 
+                         if check_result.response_time else 'N/A')
         return f"""
 🚨 HEALTHCHECK FAILURE
 
@@ -54,7 +56,7 @@ Service: {healthcheck.name}
 URL: {healthcheck.url}
 Status: {check_result.status.value.upper()}
 Error: {check_result.error_message or 'Unknown error'}
-Response Time: {check_result.response_time:.2f}s if check_result.response_time else 'N/A'
+Response Time: {response_time}
 Status Code: {check_result.status_code or 'N/A'}
 Time: {check_result.checked_at.strftime('%Y-%m-%d %H:%M:%S UTC')}
 """.strip()
@@ -63,13 +65,15 @@ Time: {check_result.checked_at.strftime('%Y-%m-%d %H:%M:%S UTC')}
         """
         Format a recovery alert message
         """
+        response_time = (f"{check_result.response_time:.2f}s" 
+                         if check_result.response_time else 'N/A')
         return f"""
 ✅ HEALTHCHECK RECOVERED
 
 Service: {healthcheck.name}
 URL: {healthcheck.url}
 Status: {check_result.status.value.upper()}
-Response Time: {check_result.response_time:.2f}s if check_result.response_time else 'N/A'
+Response Time: {response_time}
 Status Code: {check_result.status_code or 'N/A'}
 Time: {check_result.checked_at.strftime('%Y-%m-%d %H:%M:%S UTC')}
 """.strip()

@@ -1,6 +1,6 @@
 import logging
 
-from flask import flash, jsonify, redirect, render_template, request, url_for
+from flask import jsonify, render_template, request
 
 from app import app, db
 from healthcheck_engine import HealthcheckEngine
@@ -163,7 +163,7 @@ def check_healthcheck_now(hc_id):
 @app.route("/api/healthchecks/<int:hc_id>/results", methods=["GET"])
 def get_healthcheck_results(hc_id):
     """Get check results for a healthcheck"""
-    healthcheck = Healthcheck.query.get_or_404(hc_id)
+    Healthcheck.query.get_or_404(hc_id)  # Verify healthcheck exists
 
     # Get pagination parameters
     page = request.args.get("page", 1, type=int)
@@ -189,7 +189,7 @@ def get_healthcheck_results(hc_id):
 @app.route("/api/healthchecks/<int:hc_id>/alerts", methods=["GET"])
 def get_alert_configs(hc_id):
     """Get alert configurations for a healthcheck"""
-    healthcheck = Healthcheck.query.get_or_404(hc_id)
+    Healthcheck.query.get_or_404(hc_id)  # Verify healthcheck exists
     alert_configs = AlertConfig.query.filter_by(healthcheck_id=hc_id).all()
     return jsonify([config.to_dict() for config in alert_configs])
 

@@ -46,7 +46,10 @@ class HealthcheckEngine:
                         )
                     else:
                         result.status = HealthcheckStatus.UNHEALTHY
-                        result.error_message = f"Expected text '{healthcheck.expected_text}' not found in response"
+                        expected_text = healthcheck.expected_text
+                        result.error_message = (
+                            f"Expected text '{expected_text}' not found in response"
+                        )
                         logger.warning(
                             f"✗ {healthcheck.name}: Unhealthy (expected text not found)"
                         )

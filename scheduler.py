@@ -55,8 +55,9 @@ class HealthcheckScheduler:
             replace_existing=True,
         )
 
+        interval = healthcheck.check_interval
         logger.info(
-            f"Scheduled healthcheck '{healthcheck.name}' every {healthcheck.check_interval} seconds"
+            f"Scheduled healthcheck '{healthcheck.name}' every {interval} seconds"
         )
 
     def unschedule_healthcheck(self, healthcheck_id):

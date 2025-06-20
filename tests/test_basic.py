@@ -3,7 +3,7 @@
 import pytest
 
 from app import app, db
-from models import Healthcheck, HealthcheckStatus
+from models import Healthcheck
 
 
 @pytest.fixture

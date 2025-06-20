@@ -20,7 +20,8 @@ class SMSAlertPlugin(BaseAlertPlugin):
                 raise ValueError(f"SMS plugin missing required field: {field}")
 
     def send_failure_alert(self, healthcheck, check_result):
-        message = f"ALERT: {healthcheck.name} is DOWN\n{check_result.error_message or 'Unknown error'}"
+        error_msg = check_result.error_message or 'Unknown error'
+        message = f"ALERT: {healthcheck.name} is DOWN\n{error_msg}"
         self._send_sms(message)
 
     def send_recovery_alert(self, healthcheck, check_result):
