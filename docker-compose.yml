@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  healthcheck-app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=sqlite:///data/healthcheck.db
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  # Optional: PostgreSQL database
+  # postgres:
+  #   image: postgres:13
+  #   environment:
+  #     POSTGRES_DB: healthcheck
+  #     POSTGRES_USER: healthcheck
+  #     POSTGRES_PASSWORD: password
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+
+# volumes:
+#   postgres_data:
