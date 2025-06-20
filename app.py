@@ -30,6 +30,7 @@ if __name__ == "__main__":
         scheduler.schedule_all_healthchecks()
 
     try:
-        app.run(debug=True)
+        debug_mode = os.getenv("FLASK_DEBUG", "False").lower() == "true"
+        app.run(debug=debug_mode)
     finally:
         scheduler.shutdown()
