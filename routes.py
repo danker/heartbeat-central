@@ -16,9 +16,7 @@ def health():
             {
                 "status": "healthy",
                 "timestamp": (
-                    latest_result.checked_at.isoformat()
-                    if latest_result
-                    else None
+                    latest_result.checked_at.isoformat() if latest_result else None
                 ),
             }
         ),
