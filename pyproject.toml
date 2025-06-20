@@ -2,18 +2,20 @@
 requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+exclude = ["tests*", "docs*"]
+
 [project]
 name = "healthcheck-monitor"
 version = "1.0.0"
 description = "A Flask-based application for monitoring website health with configurable alerts"
 authors = [{name = "Dan Ker", email = "dan@example.com"}]
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 requires-python = ">=3.11"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
