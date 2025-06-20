@@ -19,9 +19,9 @@ db = SQLAlchemy(app)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from models import *  # noqa: F401,F403
-from routes import *  # noqa: F401,F403
-from scheduler import scheduler
+from models import *  # noqa: F401,F403,E402
+from routes import *  # noqa: F401,F403,E402
+from scheduler import scheduler  # noqa: E402
 
 if __name__ == "__main__":
     with app.app_context():
