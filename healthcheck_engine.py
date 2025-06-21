@@ -83,7 +83,7 @@ class HealthcheckEngine:
             logger.error(f"✗ {healthcheck.name}: Unexpected error - {str(e)}")
 
         # Save result to database
-        result.checked_at = datetime.utcnow()
+        result.checked_at = datetime.now(datetime.UTC)
         db.session.add(result)
         db.session.commit()
 
