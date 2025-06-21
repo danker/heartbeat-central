@@ -9,7 +9,15 @@
       "Bash(black:*)",
       "Bash(flake8:*)",
       "Bash(gh run view:*)",
-      "Bash(gh pr merge:*)"
+      "Bash(gh pr merge:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(docker stop:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(pytest:*)",
+      "Bash(chmod:*)",
+      "Bash(./scripts/lint.sh)",
+      "Bash(uv pip:*)"
     ],
     "deny": []
   }
