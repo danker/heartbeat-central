@@ -17,7 +17,8 @@
       "Bash(pytest:*)",
       "Bash(chmod:*)",
       "Bash(./scripts/lint.sh)",
-      "Bash(uv pip:*)"
+      "Bash(uv pip:*)",
+      "Bash(./scripts/test.sh:*)"
     ],
     "deny": []
   }
