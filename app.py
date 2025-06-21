@@ -3,7 +3,8 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+
+from database import db
 
 load_dotenv()
 
@@ -14,7 +15,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-db = SQLAlchemy(app)
+db.init_app(app)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,6 +32,6 @@ if __name__ == "__main__":
 
     try:
         debug_mode = os.getenv("FLASK_DEBUG", "False").lower() == "true"
-        app.run(debug=debug_mode)
+        app.run(host="0.0.0.0", port=5000, debug=debug_mode)
     finally:
         scheduler.shutdown()

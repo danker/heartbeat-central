@@ -2,7 +2,8 @@
 
 import pytest
 
-from app import app, db
+from app import app
+from database import db
 from models import Healthcheck
 
 

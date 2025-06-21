@@ -2,7 +2,8 @@ import logging
 
 from flask import jsonify, render_template, request
 
-from app import app, db
+from app import app
+from database import db
 from healthcheck_engine import HealthcheckEngine
 from models import AlertConfig, CheckResult, Healthcheck, HealthcheckStatus
 

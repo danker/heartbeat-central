@@ -5,7 +5,7 @@ from datetime import datetime
 import requests
 
 from alert_manager import AlertManager
-from app import db
+from database import db
 from models import CheckResult, Healthcheck, HealthcheckStatus
 
 logger = logging.getLogger(__name__)
