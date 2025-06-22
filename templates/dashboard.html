@@ -18,11 +18,13 @@
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h6 class="card-title mb-0">{{ item.application.name }}</h6>
                                 <span class="badge badge-pill 
-                                    {% if item.status == 'healthy' %}bg-success{% elif item.status == 'overdue' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                    {% if item.status == 'healthy' %}bg-success{% elif item.status == 'overdue' %}bg-danger{% elif item.status == 'monitoring_disabled' %}bg-secondary{% else %}bg-secondary{% endif %}">
                                     {% if item.status == 'healthy' %}
                                         <i class="fas fa-heartbeat"></i> Healthy
                                     {% elif item.status == 'overdue' %}
                                         <i class="fas fa-exclamation-triangle"></i> Overdue
+                                    {% elif item.status == 'monitoring_disabled' %}
+                                        <i class="fas fa-pause-circle"></i> Monitoring Disabled
                                     {% else %}
                                         <i class="fas fa-question-circle"></i> Unknown
                                     {% endif %}
@@ -69,6 +71,17 @@
                                 {% endif %}
                             </div>
                             <div class="card-footer">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <small class="text-muted">Monitoring:</small>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="toggle-{{ item.application.id }}" 
+                                               {% if item.application.is_active %}checked{% endif %}
+                                               onchange="toggleMonitoring({{ item.application.id }}, this.checked)">
+                                        <label class="form-check-label" for="toggle-{{ item.application.id }}">
+                                            <small>{{ 'Active' if item.application.is_active else 'Inactive' }}</small>
+                                        </label>
+                                    </div>
+                                </div>
                                 <div class="btn-group w-100" role="group">
                                     <button type="button" class="btn btn-outline-info btn-sm" 
                                             onclick="viewHeartbeatHistory({{ item.application.id }})">
@@ -165,11 +178,60 @@
                         <label for="gracePeriod" class="form-label">Grace Period (seconds)</label>
                         <input type="number" class="form-control" id="gracePeriod" value="0" min="0">
                     </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="isActive" checked>
+                            <label class="form-check-label" for="isActive">
+                                Active (monitoring enabled)
+                            </label>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" onclick="addApplication()">Add Application</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Application Modal -->
+<div class="modal fade" id="editApplicationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Application</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editApplicationForm">
+                    <input type="hidden" id="editAppId">
+                    <div class="mb-3">
+                        <label for="editAppName" class="form-label">Application Name</label>
+                        <input type="text" class="form-control" id="editAppName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editExpectedInterval" class="form-label">Expected Interval (seconds)</label>
+                        <input type="number" class="form-control" id="editExpectedInterval" required min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editGracePeriod" class="form-label">Grace Period (seconds)</label>
+                        <input type="number" class="form-control" id="editGracePeriod" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="editIsActive">
+                            <label class="form-check-label" for="editIsActive">
+                                Active (monitoring enabled)
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveApplicationChanges()">Save Changes</button>
             </div>
         </div>
     </div>
@@ -201,7 +263,8 @@
             body: JSON.stringify({
                 name: name,
                 expected_interval: parseInt(expectedInterval),
-                grace_period: parseInt(gracePeriod)
+                grace_period: parseInt(gracePeriod),
+                is_active: document.getElementById('isActive').checked
             })
         })
         .then(response => response.json())
@@ -263,27 +326,65 @@
     }
     
     function editApplication(applicationId) {
-        // For now, redirect to a simple prompt - in a real implementation this would be a proper modal
-        const newName = prompt('Enter new application name:');
-        if (newName) {
-            fetch(`/api/applications/${applicationId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: newName
-                })
-            })
+        // Fetch current application data
+        fetch(`/api/applications/${applicationId}`)
             .then(response => response.json())
             .then(data => {
-                alert('Application updated successfully');
-                location.reload();
+                // Populate the edit modal with current values
+                document.getElementById('editAppId').value = data.id;
+                document.getElementById('editAppName').value = data.name;
+                document.getElementById('editExpectedInterval').value = data.expected_interval;
+                document.getElementById('editGracePeriod').value = data.grace_period;
+                document.getElementById('editIsActive').checked = data.is_active;
+                
+                // Show the modal
+                const modal = new bootstrap.Modal(document.getElementById('editApplicationModal'));
+                modal.show();
             })
             .catch(error => {
-                alert('Error updating application');
+                alert('Error loading application data');
             });
+    }
+    
+    function saveApplicationChanges() {
+        const appId = document.getElementById('editAppId').value;
+        const name = document.getElementById('editAppName').value;
+        const expectedInterval = document.getElementById('editExpectedInterval').value;
+        const gracePeriod = document.getElementById('editGracePeriod').value;
+        const isActive = document.getElementById('editIsActive').checked;
+        
+        if (!name || !expectedInterval) {
+            alert('Please fill in all required fields');
+            return;
         }
+        
+        fetch(`/api/applications/${appId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                expected_interval: parseInt(expectedInterval),
+                grace_period: parseInt(gracePeriod),
+                is_active: isActive
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.id) {
+                alert('Application updated successfully');
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editApplicationModal'));
+                if (modal) modal.hide();
+                location.reload();
+            } else {
+                alert('Error updating application');
+            }
+        })
+        .catch(error => {
+            alert('Error updating application');
+        });
     }
     
     function deleteApplication(applicationId, applicationName) {
@@ -303,6 +404,45 @@
                 alert('Error deleting application');
             });
         }
+    }
+    
+    function toggleMonitoring(applicationId, isActive) {
+        fetch(`/api/applications/${applicationId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                is_active: isActive
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.id) {
+                // Update the label text
+                const label = document.querySelector(`label[for="toggle-${applicationId}"]`);
+                if (label) {
+                    label.innerHTML = `<small>${isActive ? 'Active' : 'Inactive'}</small>`;
+                }
+                // Reload page to update status badge
+                location.reload();
+            } else {
+                alert('Error updating monitoring status');
+                // Revert the toggle
+                const toggle = document.getElementById(`toggle-${applicationId}`);
+                if (toggle) {
+                    toggle.checked = !isActive;
+                }
+            }
+        })
+        .catch(error => {
+            alert('Error updating monitoring status');
+            // Revert the toggle
+            const toggle = document.getElementById(`toggle-${applicationId}`);
+            if (toggle) {
+                toggle.checked = !isActive;
+            }
+        });
     }
 </script>
 {% endblock %}

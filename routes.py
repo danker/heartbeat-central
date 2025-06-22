@@ -91,7 +91,9 @@ def dashboard():
         )
 
         # Determine status
-        if application.is_overdue():
+        if not application.is_active:
+            status = "monitoring_disabled"
+        elif application.is_overdue():
             status = "overdue"
         elif application.last_heartbeat:
             status = "healthy"
@@ -180,6 +182,8 @@ def update_application(app_id):
 
     try:
         # Update fields if provided
+        old_is_active = application.is_active
+
         if "name" in data:
             application.name = data["name"]
         if "expected_interval" in data:
@@ -191,6 +195,14 @@ def update_application(app_id):
 
         application.updated_at = datetime.now()
         db.session.commit()
+
+        # Log state changes for is_active field
+        if "is_active" in data and old_is_active != application.is_active:
+            status_text = "activated" if application.is_active else "deactivated"
+            logger.info(
+                f"Application {application.name} (ID: {application.id}) "
+                f"monitoring {status_text}"
+            )
 
         logger.info(f"Updated application: {application.name}")
         return jsonify(application.to_dict())
