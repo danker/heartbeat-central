@@ -6,9 +6,9 @@ build-backend = "setuptools.build_meta"
 exclude = ["tests*", "docs*"]
 
 [project]
-name = "healthcheck-monitor"
+name = "heartbeat-central"
 version = "1.0.0"
-description = "A Flask-based application for monitoring website health with configurable alerts"
+description = "A Flask-based centralized heartbeat monitoring service with configurable alerts"
 authors = [{name = "Dan Ker", email = "dan@example.com"}]
 readme = "README.md"
 license = "MIT"
@@ -48,9 +48,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/danker/healthcheck-monitor"
-Repository = "https://github.com/danker/healthcheck-monitor"
-Issues = "https://github.com/danker/healthcheck-monitor/issues"
+Homepage = "https://github.com/danker/heartbeat-central"
+Repository = "https://github.com/danker/heartbeat-central"
+Issues = "https://github.com/danker/heartbeat-central/issues"
 
 [dependency-groups]
 dev = [
@@ -83,7 +83,7 @@ extend-exclude = '''
 profile = "black"
 multi_line_output = 3
 line_length = 88
-known_first_party = ["healthcheck_monitor"]
+known_first_party = ["heartbeat_central"]
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 
 [tool.flake8]

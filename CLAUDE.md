@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Flask-based heartbeat monitoring application with pluggable alerting system. Applications register with the service and send periodic heartbeats. The system alerts when applications miss their expected heartbeat windows.
+This is Heartbeat Central - a Flask-based centralized heartbeat monitoring service with pluggable alerting system. Applications register with the service and send periodic heartbeats. The system alerts when applications miss their expected heartbeat windows.
 
 ## Development Commands
 
