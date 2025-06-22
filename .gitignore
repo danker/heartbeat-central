@@ -64,3 +64,7 @@ htmlcov/
 # Flask
 instance/
 .webassets-cache
+
+# Development Environment
+.python-version
+.claude/settings.local.json
