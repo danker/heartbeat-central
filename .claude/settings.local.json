@@ -24,7 +24,9 @@
       "Bash(grep:*)",
       "Bash(uv run pytest:*)",
       "Bash(uv run:*)",
-      "Bash(docker rm:*)"
+      "Bash(docker rm:*)",
+      "Bash(uv add:*)",
+      "Bash(pip install:*)"
     ],
     "deny": []
   }
