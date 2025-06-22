@@ -68,4 +68,3 @@ instance/
 # Development Environment
 .python-version
 .claude/settings.local.json
-.claude/settings.local.json
