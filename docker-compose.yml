@@ -1,13 +1,13 @@
 version: '3.8'
 
 services:
-  healthcheck-app:
+  heartbeat-app:
     build: .
     ports:
       - "5000:5000"
     environment:
       - FLASK_ENV=production
-      - DATABASE_URL=sqlite:///data/healthcheck.db
+      - DATABASE_URL=sqlite:///data/heartbeat.db
     volumes:
       - ./data:/app/data
     env_file:
@@ -18,8 +18,8 @@ services:
   # postgres:
   #   image: postgres:13
   #   environment:
-  #     POSTGRES_DB: healthcheck
-  #     POSTGRES_USER: healthcheck
+  #     POSTGRES_DB: heartbeat
+  #     POSTGRES_USER: heartbeat
   #     POSTGRES_PASSWORD: password
   #   volumes:
   #     - postgres_data:/var/lib/postgresql/data

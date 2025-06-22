@@ -20,7 +20,10 @@
       "Bash(uv pip:*)",
       "Bash(./scripts/test.sh:*)",
       "Bash(mv:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(grep:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run:*)"
     ],
     "deny": []
   }

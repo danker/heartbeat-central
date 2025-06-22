@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run all tests for the healthcheck-monitor project
+# Run all tests for the heartbeat-central project
 
 set -e  # Exit on first error
 

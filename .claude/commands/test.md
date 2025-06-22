@@ -1,4 +1,4 @@
-Run all tests for the healthcheck-monitor project
+Run all tests for the heartbeat-central project
 
 ---
 
