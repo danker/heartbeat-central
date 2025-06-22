@@ -18,18 +18,18 @@ class DiscordAlertPlugin(BaseAlertPlugin):
             if field not in self.config:
                 raise ValueError(f"Discord plugin missing required field: {field}")
 
-    def send_failure_alert(self, healthcheck, check_result):
-        message = self.format_failure_message(healthcheck, check_result)
+    def send_failure_alert(self, application, alert_context):
+        message = self.format_failure_message(application, alert_context)
         self._send_discord_message(message, color=0xFF0000)  # Red
 
-    def send_recovery_alert(self, healthcheck, check_result):
-        message = self.format_recovery_message(healthcheck, check_result)
+    def send_recovery_alert(self, application, alert_context):
+        message = self.format_recovery_message(application, alert_context)
         self._send_discord_message(message, color=0x00FF00)  # Green
 
     def _send_discord_message(self, message, color=0xFFAA00):
         try:
             webhook_url = self.config["webhook_url"]
-            username = self.config.get("username", "HealthcheckBot")
+            username = self.config.get("username", "HeartbeatBot")
 
             payload = {
                 "username": username,

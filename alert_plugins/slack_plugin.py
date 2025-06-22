@@ -18,19 +18,19 @@ class SlackAlertPlugin(BaseAlertPlugin):
             if field not in self.config:
                 raise ValueError(f"Slack plugin missing required field: {field}")
 
-    def send_failure_alert(self, healthcheck, check_result):
-        message = self.format_failure_message(healthcheck, check_result)
+    def send_failure_alert(self, application, alert_context):
+        message = self.format_failure_message(application, alert_context)
         self._send_slack_message(message, color="danger")
 
-    def send_recovery_alert(self, healthcheck, check_result):
-        message = self.format_recovery_message(healthcheck, check_result)
+    def send_recovery_alert(self, application, alert_context):
+        message = self.format_recovery_message(application, alert_context)
         self._send_slack_message(message, color="good")
 
     def _send_slack_message(self, message, color="warning"):
         try:
             webhook_url = self.config["webhook_url"]
             channel = self.config.get("channel")
-            username = self.config.get("username", "HealthcheckBot")
+            username = self.config.get("username", "HeartbeatBot")
 
             payload = {
                 "username": username,

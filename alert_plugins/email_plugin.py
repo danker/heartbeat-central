@@ -20,14 +20,14 @@ class EmailAlertPlugin(BaseAlertPlugin):
             if field not in self.config:
                 raise ValueError(f"Email plugin missing required field: {field}")
 
-    def send_failure_alert(self, healthcheck, check_result):
-        subject = f"[ALERT] {healthcheck.name} is DOWN"
-        message = self.format_failure_message(healthcheck, check_result)
+    def send_failure_alert(self, application, alert_context):
+        subject = f"[ALERT] {application.name} missed heartbeat"
+        message = self.format_failure_message(application, alert_context)
         self._send_email(subject, message)
 
-    def send_recovery_alert(self, healthcheck, check_result):
-        subject = f"[RECOVERY] {healthcheck.name} is UP"
-        message = self.format_recovery_message(healthcheck, check_result)
+    def send_recovery_alert(self, application, alert_context):
+        subject = f"[RECOVERY] {application.name} heartbeat resumed"
+        message = self.format_recovery_message(application, alert_context)
         self._send_email(subject, message)
 
     def _send_email(self, subject, message):

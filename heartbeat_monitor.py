@@ -171,10 +171,7 @@ class HeartbeatMonitor:
     def _send_application_alert(self, alert_config, application, result, alert_type):
         """
         Send a single alert using the alert manager
-        This is a bridge between the application alerts and the existing alert system
         """
-        # For now, we'll use the existing alert manager structure
-        # TODO: This might need to be updated when we modify alert_manager.py
         plugin_class = self.alert_manager.plugins.get(alert_config.alert_type)
         if not plugin_class:
             logger.error(f"Unknown alert type: {alert_config.alert_type}")
@@ -183,23 +180,21 @@ class HeartbeatMonitor:
         try:
             plugin = plugin_class(alert_config.configuration)
 
-            # Create a mock healthcheck object for compatibility
-            mock_healthcheck = type(
-                "MockHealthcheck",
-                (),
-                {
-                    "name": application.name,
-                    "url": f"heartbeat://{application.uuid}",
-                    "id": application.id,
-                },
-            )()
-
-            mock_check_result = type("MockCheckResult", (), result)()
+            # Create alert context from result
+            alert_context = (
+                result
+                if isinstance(result, dict)
+                else {
+                    "checked_at": result,
+                    "last_seen_at": getattr(application, "last_heartbeat_at", None),
+                    "recovered_at": result if alert_type == "recovery" else None,
+                }
+            )
 
             if alert_type == "missed_heartbeat":
-                plugin.send_failure_alert(mock_healthcheck, mock_check_result)
+                plugin.send_failure_alert(application, alert_context)
             elif alert_type == "recovery":
-                plugin.send_recovery_alert(mock_healthcheck, mock_check_result)
+                plugin.send_recovery_alert(application, alert_context)
 
             logger.info(f"Sent {alert_type} alert via {alert_config.alert_type}")
 

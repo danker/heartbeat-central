@@ -66,34 +66,21 @@ class AlertManager:
         try:
             plugin = plugin_class(alert_config.configuration)
 
-            # Create mock objects for compatibility with existing plugins
-            mock_healthcheck = type(
-                "MockHealthcheck",
-                (),
-                {
-                    "name": application.name,
-                    "url": f"heartbeat://{application.uuid}",
-                    "id": application.id,
-                },
-            )()
-
-            mock_result = type(
-                "MockResult",
-                (),
-                (
-                    result
-                    if isinstance(result, dict)
-                    else {
-                        "status": "unknown",
-                        "error_message": str(result) if result else None,
-                    }
-                ),
-            )()
+            # Create alert context from result
+            alert_context = (
+                result
+                if isinstance(result, dict)
+                else {
+                    "checked_at": result,
+                    "last_seen_at": getattr(application, "last_heartbeat_at", None),
+                    "recovered_at": result if alert_type == "recovery" else None,
+                }
+            )
 
             if alert_type == "failure":
-                plugin.send_failure_alert(mock_healthcheck, mock_result)
+                plugin.send_failure_alert(application, alert_context)
             elif alert_type == "recovery":
-                plugin.send_recovery_alert(mock_healthcheck, mock_result)
+                plugin.send_recovery_alert(application, alert_context)
 
             logger.info(f"Sent {alert_type} alert via {alert_config.alert_type}")
 
