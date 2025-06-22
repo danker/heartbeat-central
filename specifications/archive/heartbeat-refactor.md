@@ -53,7 +53,7 @@ class Application(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.now(UTC))
 ```
 
-**Optional Heartbeat History:**
+**Heartbeat History (IMPLEMENTED):**
 ```python
 class HeartbeatEvent(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -146,7 +146,6 @@ HEARTBEAT_CHECK_INTERVAL=30  # seconds between missed heartbeat checks
 **SPECIFICATION COMPLETED: All acceptance criteria have been implemented and verified.**
 
 ## Open Questions
-- Should we implement heartbeat event history logging initially, or add it later?
 - Do we need rate limiting on the heartbeat endpoint to prevent abuse?
 - Should we support bulk heartbeats (multiple UUIDs in one request) for efficiency?
 - How should we handle clock skew between applications and our server?
