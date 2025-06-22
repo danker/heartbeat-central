@@ -4,7 +4,7 @@ from alert_plugins.discord_plugin import DiscordAlertPlugin
 from alert_plugins.email_plugin import EmailAlertPlugin
 from alert_plugins.slack_plugin import SlackAlertPlugin
 from alert_plugins.sms_plugin import SMSAlertPlugin
-from models import AlertConfig
+from models import ApplicationAlertConfig
 
 logger = logging.getLogger(__name__)
 
@@ -22,39 +22,39 @@ class AlertManager:
             "sms": SMSAlertPlugin,
         }
 
-    def send_alerts(self, healthcheck, check_result):
+    def send_alerts(self, application, result):
         """
-        Send failure alerts for a healthcheck
+        Send failure alerts for an application
         """
-        alert_configs = AlertConfig.query.filter_by(
-            healthcheck_id=healthcheck.id, is_active=True
+        alert_configs = ApplicationAlertConfig.query.filter_by(
+            application_id=application.id, is_active=True
         ).all()
 
         for alert_config in alert_configs:
             try:
-                self._send_alert(alert_config, healthcheck, check_result, "failure")
+                self._send_alert(alert_config, application, result, "failure")
             except Exception as e:
                 logger.error(
                     f"Failed to send {alert_config.alert_type} alert: {str(e)}"
                 )
 
-    def send_recovery_alerts(self, healthcheck, check_result):
+    def send_recovery_alerts(self, application, result):
         """
-        Send recovery alerts for a healthcheck
+        Send recovery alerts for an application
         """
-        alert_configs = AlertConfig.query.filter_by(
-            healthcheck_id=healthcheck.id, is_active=True
+        alert_configs = ApplicationAlertConfig.query.filter_by(
+            application_id=application.id, is_active=True
         ).all()
 
         for alert_config in alert_configs:
             try:
-                self._send_alert(alert_config, healthcheck, check_result, "recovery")
+                self._send_alert(alert_config, application, result, "recovery")
             except Exception as e:
                 logger.error(
                     f"Failed to send {alert_config.alert_type} recovery alert: {str(e)}"
                 )
 
-    def _send_alert(self, alert_config, healthcheck, check_result, alert_type):
+    def _send_alert(self, alert_config, application, result, alert_type):
         """
         Send a single alert using the appropriate plugin
         """
@@ -66,10 +66,34 @@ class AlertManager:
         try:
             plugin = plugin_class(alert_config.configuration)
 
+            # Create mock objects for compatibility with existing plugins
+            mock_healthcheck = type(
+                "MockHealthcheck",
+                (),
+                {
+                    "name": application.name,
+                    "url": f"heartbeat://{application.uuid}",
+                    "id": application.id,
+                },
+            )()
+
+            mock_result = type(
+                "MockResult",
+                (),
+                (
+                    result
+                    if isinstance(result, dict)
+                    else {
+                        "status": "unknown",
+                        "error_message": str(result) if result else None,
+                    }
+                ),
+            )()
+
             if alert_type == "failure":
-                plugin.send_failure_alert(healthcheck, check_result)
+                plugin.send_failure_alert(mock_healthcheck, mock_result)
             elif alert_type == "recovery":
-                plugin.send_recovery_alert(healthcheck, check_result)
+                plugin.send_recovery_alert(mock_healthcheck, mock_result)
 
             logger.info(f"Sent {alert_type} alert via {alert_config.alert_type}")
 

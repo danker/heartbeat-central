@@ -1,10 +1,10 @@
-"""Basic tests for the healthcheck monitor application."""
+"""Basic tests for the heartbeat monitor application."""
 
 import pytest
 
 from app import app
 from database import db
-from models import Healthcheck
+from models import Application
 
 
 @pytest.fixture
@@ -35,70 +35,61 @@ def test_dashboard_endpoint(client):
     assert response.status_code == 200
 
 
-def test_api_healthchecks_get(client):
-    """Test getting healthchecks via API."""
-    response = client.get("/api/healthchecks")
+def test_api_applications_get(client):
+    """Test getting applications via API."""
+    response = client.get("/api/applications")
     assert response.status_code == 200
     assert response.is_json
     data = response.get_json()
     assert isinstance(data, list)
 
 
-def test_api_healthchecks_post(client):
-    """Test creating a healthcheck via API."""
+def test_api_applications_post(client):
+    """Test creating an application via API."""
     payload = {
-        "name": "Test Healthcheck",
-        "url": "https://example.com",
-        "expected_text": "Example",
-        "check_interval": 300,
-        "timeout": 30,
+        "name": "Test Application",
+        "expected_interval": 300,
+        "grace_period": 30,
     }
 
-    response = client.post("/api/healthchecks", json=payload)
+    response = client.post("/api/applications", json=payload)
     assert response.status_code == 201
     assert response.is_json
 
     data = response.get_json()
-    assert data["name"] == "Test Healthcheck"
-    assert data["url"] == "https://example.com"
+    assert data["name"] == "Test Application"
+    assert data["expected_interval"] == 300
+    assert "uuid" in data
 
 
-def test_api_healthchecks_post_invalid(client):
-    """Test creating a healthcheck with invalid data."""
-    payload = {"name": "Test"}  # Missing required URL
+def test_api_applications_post_invalid(client):
+    """Test creating an application with invalid data."""
+    payload = {"name": "Test"}  # Missing required expected_interval
 
-    response = client.post("/api/healthchecks", json=payload)
+    response = client.post("/api/applications", json=payload)
     assert response.status_code == 400
 
 
-def test_healthcheck_model():
-    """Test the Healthcheck model."""
-    hc = Healthcheck(
-        name="Test",
-        url="https://example.com",
-        expected_text="test",
-        check_interval=300,
-        timeout=30,
+def test_application_model():
+    """Test the Application model."""
+    app = Application(
+        name="Test Application",
+        expected_interval=300,
+        grace_period=30,
     )
 
-    assert hc.name == "Test"
-    assert hc.url == "https://example.com"
-    assert hc.is_active is None  # Default is only applied when saved to DB
+    assert app.name == "Test Application"
+    assert app.expected_interval == 300
+    assert app.grace_period == 30
 
     # Test to_dict method
-    data = hc.to_dict()
-    assert data["name"] == "Test"
-    assert data["url"] == "https://example.com"
+    data = app.to_dict()
+    assert data["name"] == "Test Application"
+    assert data["expected_interval"] == 300
+    assert "uuid" in data
 
 
-def test_status_api(client):
-    """Test the status API endpoint."""
-    response = client.get("/api/status")
-    assert response.status_code == 200
-    assert response.is_json
-
-    data = response.get_json()
-    assert "total_healthchecks" in data
-    assert "healthy" in data
-    assert "unhealthy" in data
-    assert "unknown" in data
+def test_heartbeat_endpoint_invalid_uuid(client):
+    """Test heartbeat endpoint with invalid UUID."""
+    response = client.post("/heartbeat/invalid-uuid")
+    assert response.status_code == 404  # Flask will return 404 for invalid UUID format

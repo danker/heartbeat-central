@@ -18,7 +18,9 @@
       "Bash(chmod:*)",
       "Bash(./scripts/lint.sh)",
       "Bash(uv pip:*)",
-      "Bash(./scripts/test.sh:*)"
+      "Bash(./scripts/test.sh:*)",
+      "Bash(mv:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }

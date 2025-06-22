@@ -20,18 +20,22 @@ db.init_app(app)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+from heartbeat_monitor import HeartbeatMonitor  # noqa: E402
 from models import *  # noqa: F401,F403,E402
 from routes import *  # noqa: F401,F403,E402
-from scheduler import scheduler  # noqa: E402
 
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-        # Schedule all existing healthchecks
-        scheduler.schedule_all_healthchecks()
+
+    # Initialize and start heartbeat monitor
+    heartbeat_monitor = HeartbeatMonitor(app)
+    heartbeat_monitor.start()
 
     try:
         debug_mode = os.getenv("FLASK_DEBUG", "False").lower() == "true"
-        app.run(host="0.0.0.0", port=5000, debug=debug_mode)
+        port = int(os.getenv("PORT", "5000"))
+        logger.info("Starting Flask application with heartbeat monitoring enabled")
+        app.run(host="0.0.0.0", port=port, debug=debug_mode)
     finally:
-        scheduler.shutdown()
+        heartbeat_monitor.stop()

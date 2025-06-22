@@ -129,19 +129,21 @@ HEARTBEAT_CHECK_INTERVAL=30  # seconds between missed heartbeat checks
 5. Verify admin interface shows correct application status
 
 ## Acceptance Criteria
-- [ ] All old healthcheck/endpoint monitoring code is removed
-- [ ] Admin can register applications with name, interval, and grace period
-- [ ] System generates UUID for each registered application
-- [ ] Applications can send heartbeats to `POST /heartbeat/{uuid}`
-- [ ] System updates last_heartbeat timestamp on successful heartbeat
-- [ ] Background monitor runs every configurable interval (default 30s)
-- [ ] Alerts are sent when applications miss heartbeat windows
-- [ ] Grace period is respected before sending alerts
-- [ ] Web UI allows viewing and managing applications
-- [ ] API endpoints support all application CRUD operations
-- [ ] Existing alert plugins (email, slack, discord, sms) work with applications
-- [ ] All tests pass with new system
-- [ ] Documentation is updated to reflect new paradigm
+- [x] All old healthcheck/endpoint monitoring code is removed
+- [x] Admin can register applications with name, interval, and grace period
+- [x] System generates UUID for each registered application
+- [x] Applications can send heartbeats to `POST /heartbeat/{uuid}`
+- [x] System updates last_heartbeat timestamp on successful heartbeat
+- [x] Background monitor runs every configurable interval (default 30s)
+- [x] Alerts are sent when applications miss heartbeat windows
+- [x] Grace period is respected before sending alerts
+- [x] Web UI allows viewing and managing applications
+- [x] API endpoints support all application CRUD operations
+- [x] Existing alert plugins (email, slack, discord, sms) work with applications
+- [x] All tests pass with new system
+- [x] Documentation is updated to reflect new paradigm
+
+**SPECIFICATION COMPLETED: All acceptance criteria have been implemented and verified.**
 
 ## Open Questions
 - Should we implement heartbeat event history logging initially, or add it later?
