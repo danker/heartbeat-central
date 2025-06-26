@@ -10,6 +10,8 @@ Implement comprehensive security measures for the heartbeat monitoring system to
 - Rate limiting to prevent abuse
 - Secure storage of sensitive configuration data
 - Audit logging for security events
+- Egress traffic filtering to prevent Server-Side Request Forgery (SSRF)
+- Alert storm prevention to mitigate logical denial-of-service
 
 ### Non-Functional Requirements
 - OWASP Top 10 compliance
@@ -28,6 +30,8 @@ Implement defense-in-depth security approach with multiple layers of protection 
 - Input validator: Request sanitization and validation
 - Rate limiter: Request throttling and abuse prevention
 - Security scanner: Automated vulnerability detection
+- Egress filter: Validates and restricts outgoing webhook URLs to prevent SSRF
+- Alert aggregator: Groups and summarizes mass failure events to prevent alert fatigue
 
 ### Data Model
 Security-related data structures:
@@ -116,6 +120,7 @@ class SecurityEvent(db.Model):
 - What rate limiting strategy works best for heartbeats?
 - How should we handle API key rotation?
 - Should we implement IP whitelisting for heartbeat endpoints?
+- What is the appropriate threshold for triggering alert storm aggregation?
 
 ## References
 - OWASP Top 10 security risks
