@@ -24,7 +24,7 @@ classifiers = [
     "Framework :: Flask",
 ]
 dependencies = [
-    "Flask==3.1.1",
+    "Flask==3.1.2",
     "Flask-SQLAlchemy==3.1.1",
     "APScheduler==3.10.4",
     "requests==2.31.0",
